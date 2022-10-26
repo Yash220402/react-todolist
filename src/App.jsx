@@ -15,6 +15,7 @@ function App(props) {
       name={task.name}
       completed={task.completed}
       toggleTaskCompleted={toggleTaskCompleted}
+      deleteTask={deleteTask}
     />
   );  // ?. -> optional chaining
 
@@ -37,6 +38,13 @@ function App(props) {
       return task;
     });
     setTasks(updateTasks);
+  }
+
+  // deleting tasks
+  function deleteTask(id) {
+    const remainingTasks = tasks.filter((task) => task.id !== id);
+    setTasks(remainingTasks);
+    console.log(tasks);
   }
 
   return (

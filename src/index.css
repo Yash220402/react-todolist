@@ -3,7 +3,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
-  font-family: "JetBrains Mono";
+  font-family: "Courier Prime Sans";
 }
 *:focus {
   outline: 3px dashed #228bec;
