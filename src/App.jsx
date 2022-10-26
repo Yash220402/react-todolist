@@ -10,12 +10,13 @@ function App(props) {
   // map tasks to Component
   const taskList = props.tasks?.map((task) =>
     <Todo 
-      id={task.id}
-      key={task.id}
-      name={task.name}
-      completed={task.completed}
-      toggleTaskCompleted={toggleTaskCompleted}
-      deleteTask={deleteTask}
+      id={ task.id }
+      key={ task.id }
+      name={ task.name }
+      completed={ task.completed }
+      toggleTaskCompleted={ toggleTaskCompleted }
+      deleteTask={ deleteTask }
+      editTask={ editTask }
     />
   );  // ?. -> optional chaining
 
@@ -45,6 +46,17 @@ function App(props) {
     const remainingTasks = tasks.filter((task) => task.id !== id);
     setTasks(remainingTasks);
     console.log(tasks);
+  }
+
+  // editing tasks
+  function editTask(id, newName) {
+    const editedTaskList = tasks.map((task) => {
+      if (id === task.id) {
+        return {...task, name: newName}
+      }
+      return task;
+    });
+    setTasks(editedTaskList);
   }
 
   return (
