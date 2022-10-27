@@ -5,10 +5,19 @@ import FilterButton from "./components/FilterButton";
 import { useState } from "react";
 import { nanoid } from "nanoid";
 
+const CATEGORY_MAP = {
+  All: () => true,
+  Active: (task) => !task.completed,
+  Completed: (task) => task.completed
+}
+const CATEGORY_NAMES = Object.keys(CATEGORY_MAP);
+
 function App(props) {
+  const [tasks, setTasks] = useState(props.tasks);
+  const [category, setCategory] = useState("All");
 
   // map tasks to Component
-  const taskList = props.tasks?.map((task) =>
+  const taskList = tasks.filter(CATEGORY_MAP[category]).map((task) =>
     <Todo 
       id={ task.id }
       key={ task.id }
@@ -21,15 +30,14 @@ function App(props) {
   );  // ?. -> optional chaining
 
   // Add Tasks
-  const [tasks, setTasks] = useState(props.tasks);
   function addTask(name) {
     const newTask = {id: `todo-${nanoid()}`, name, completed: false};
     setTasks([...tasks, newTask]);
   }
 
   // counting tasks
-  const tasksNoun = taskList.length !== 1 ? 'tasks':'tasks';
-  const headingText = `${taskList.length} ${tasksNoun} remaining`;
+  const tasksNoun = taskList.length !== 1 ? 'tasks':'task';
+  const headingText = `${taskList.length} ${tasksNoun}`;
 
   function toggleTaskCompleted(id) {
     const updateTasks = tasks.map((task) => {
@@ -45,7 +53,6 @@ function App(props) {
   function deleteTask(id) {
     const remainingTasks = tasks.filter((task) => task.id !== id);
     setTasks(remainingTasks);
-    console.log(tasks);
   }
 
   // editing tasks
@@ -59,6 +66,16 @@ function App(props) {
     setTasks(editedTaskList);
   }
 
+  // filtering tasks 
+  const categoryList = CATEGORY_NAMES.map((name) => (
+    <FilterButton 
+      key={name} 
+      name={name}
+      isPressed={name === category}
+      setCategory={setCategory}
+    />
+  ))
+
   return (
     <div className="todoapp stack-large">
       <h1>TodoMatic</h1>
@@ -66,9 +83,7 @@ function App(props) {
       <Form addTask={addTask} />
 
       <div className="filters btn-group stack-exception">
-        <FilterButton />
-        <FilterButton />
-        <FilterButton />
+        { categoryList }
       </div>
 
       <h2 id="list-heading">{ headingText }</h2>
