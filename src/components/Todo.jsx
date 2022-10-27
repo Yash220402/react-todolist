@@ -1,4 +1,13 @@
-import {useState} from 'react';
+import { editableInputTypes } from '@testing-library/user-event/dist/utils';
+import {useEffect, useRef, useState} from 'react';
+
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
 
 function Todo(props) {
 
@@ -13,6 +22,10 @@ function Todo(props) {
     setNewName("");
     setEditing(false);
   }
+
+  // targeting elements
+  const editFieldRef = useRef(null);
+  const editButtonRef = useRef(null);
 
   // editing and view templates
   const [isEditing, setEditing] = useState(false);
@@ -29,6 +42,7 @@ function Todo(props) {
           type="text"
           value={newName}
           onChange={handleChange}
+          ref={editFieldRef}
         />
       </div>
       <div className="btn-group">
@@ -65,7 +79,8 @@ function Todo(props) {
           <button 
             type="button" 
             className="btn"
-            onClick={() => setEditing(true)}  
+            onClick={() => setEditing(true)}
+            ref={editButtonRef}
           >
             Edit <span className="visually-hidden">{props.name}</span>
           </button>
@@ -79,6 +94,17 @@ function Todo(props) {
         </div>
     </div>
   );
+  
+  const wasEditing = usePrevious(isEditing);
+
+  useEffect(() => {
+      if (!wasEditing && isEditing) {
+        editFieldRef.current.focus();
+      } 
+      if (wasEditing && !isEditing) {
+        editButtonRef.current.focus();
+      }
+  }, [wasEditing, isEditing]);
 
   return (
     <li className="todo stack-small">

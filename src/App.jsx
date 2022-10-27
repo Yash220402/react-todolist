@@ -2,7 +2,7 @@ import Todo from "./components/Todo";
 import Form from "./components/Form";
 import FilterButton from "./components/FilterButton";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { nanoid } from "nanoid";
 
 const CATEGORY_MAP = {
